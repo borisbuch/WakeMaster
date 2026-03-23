@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import Foundation
 
 // MARK: - Modell
-struct Trick: Identifiable {
-    let id = UUID()
+class Trick: Identifiable {
+    let id: Int
     let name: String
     let description: String
     let progressionLevel: ProgressionLevel
@@ -29,7 +30,10 @@ struct Trick: Identifiable {
             return value.trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
-        guard components.count >= 7, let level = ProgressionLevel(rawValue: components[3]), let tc = TrickCategory(rawValue: components[4]) else { return nil }
+        guard components.count >= 7,
+              let csvId = Int(components[0]),
+              let level = ProgressionLevel(rawValue: components[3]), let tc = TrickCategory(rawValue: components[4]) else { return nil }
+        self.id = csvId
         self.name = components[1]
         self.description = components[2]
         self.progressionLevel = level
@@ -46,7 +50,7 @@ struct Trick: Identifiable {
         case backRoll = "Back Roll"
         case frontRoll = "Front Roll"
         case tantrum = "Tantrum"
-        case whip = "whip"
+        case whip = "Whip"
         case rails = "Rails"
         
         var color: Color {
@@ -113,6 +117,7 @@ struct Trick: Identifiable {
             lhs.sortOrder < rhs.sortOrder
         }
     }
+    
 }
 
 // MARK: - CSV Loader

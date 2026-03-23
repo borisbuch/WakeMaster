@@ -1,0 +1,55 @@
+//
+//  TrickProgress.swift
+//  WakeMaster
+//
+//  Created by Boris on 23.03.26.
+//
+
+import SwiftData
+import SwiftUI
+
+@Model
+final class TrickProgress {
+    var trickID: Int
+    var status: Status
+    
+    init(
+        trickID: Int,
+        status: Status = .flagged
+    ) {
+        self.trickID = trickID
+        self.status = status
+    }
+}
+
+enum Status: String, Codable, CaseIterable {
+    case notLanded = "not Landed"
+    case flagged = "Flagged"
+    case landed = "Landed"
+     
+    var color: Color {
+        switch self {
+        case .notLanded: return .gray
+        case .flagged: return .red
+        case .landed: return .green
+        }
+    }
+    var symbol: String {
+        switch self{
+        case .notLanded: return "plus"
+        case .flagged: return "flag"
+        case .landed: return "checkmark"
+        }
+    }
+    var next: Status {
+            switch self {
+            case .notLanded: return .flagged
+            case .flagged: return .landed
+            case .landed: return .notLanded
+            }
+        }
+    
+    
+}
+
+

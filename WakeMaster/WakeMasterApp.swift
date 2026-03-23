@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct WakeMasterApp: App {
@@ -13,6 +14,7 @@ struct WakeMasterApp: App {
         WindowGroup {
             MainView()
         }
+        .modelContainer(for: TrickProgress.self)
     }
 }
 

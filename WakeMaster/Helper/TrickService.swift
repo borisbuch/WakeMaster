@@ -95,8 +95,5 @@ class TrickService {
      
 
 }
-#Playground {
-    
-    let dict = TrickService().groupedFilteredByProgressionLevel("")
-}
+
 
