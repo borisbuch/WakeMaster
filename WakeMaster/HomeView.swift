@@ -8,6 +8,7 @@ struct HomeView: View {
                 Spacer()
             }
             .navigationTitle("Home")
+            .toolbarTitleDisplayMode(.inlineLarge)
         }
     }
 }

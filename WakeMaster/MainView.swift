@@ -12,17 +12,11 @@ struct MainView: View {
     
     var body: some View {
         
-    //TabBar minimize on Scroll ist nur in iOS 26+ verfügbar
+        TabBar()
+            .tabBarMinimizeBehavior(.onScrollDown)
         
-        if #available(iOS 26.0, *) {
-            TabBar()
-                .tabBarMinimizeBehavior(.onScrollDown)
-        } else {
-            // Fallback on earlier versions
-            TabBar()
-        }
-            }
-    
+        
+    }
     
 }
                 
