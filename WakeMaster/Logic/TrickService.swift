@@ -19,6 +19,7 @@ class TrickService {
         case none = "None"
         case difficulty = "Difficulty"
         case category = "Category"
+        case status = "Status"
     }
     
     var sortOrderTxt: String {
@@ -93,6 +94,13 @@ class TrickService {
              return Dictionary(grouping: filteredItems, by: \.category)
          }
      
+    func groupedFilteredByStatus(_ filterString: String, trickProgress: [TrickProgress]) -> [Status : [Trick]] {
+             let filteredItems = itemsFilteredBy(filterString)
+        return Dictionary(grouping: filteredItems) { trick in
+            trickProgress.first(where: {$0.trickID == trick.id})?.status ?? .notLanded
+        }
+
+         }
 
 }
 

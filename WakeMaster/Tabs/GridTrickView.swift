@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import SwiftData
+
 let tricks: [Trick] = loadTricksFromCSV()
 
 
@@ -16,6 +18,7 @@ struct GridTrickView: View {
     @State var selectedSort: String = "difficulty ascending"
     @State private var searchField: String = ""
     @State private var service = TrickService()
+    @Query private var trickProgress: [TrickProgress]
     
     
     var body: some View {
@@ -66,6 +69,30 @@ struct GridTrickView: View {
                                     } icon: {
                                         Image(systemName: category.symbol)
                                             .foregroundStyle(.secondary)
+                                    }
+                                    .font(.title2)
+                                }
+                            }
+                        }
+                    case .status :
+                        
+                        let dict = service.groupedFilteredByStatus(searchField, trickProgress: trickProgress)
+                        
+                        ForEach(dict.keys.sorted(), id: \.self) { category in
+                            if let items = dict[category] {
+                                Section {
+                                    ForEach(items) { trick in
+                                        NavigationLink(destination: TrickDetailView(trick: trick))
+                                        {
+                                            TrickItem(trick: trick,service: service)
+                                        }
+                                    }
+                                } header: {
+                                    Label{
+                                        Text(category.rawValue)
+                                    } icon: {
+                                        Image(systemName: category.symbol)
+                                            .foregroundStyle(category.color)
                                     }
                                     .font(.title2)
                                 }

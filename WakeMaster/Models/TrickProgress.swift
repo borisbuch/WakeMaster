@@ -22,7 +22,7 @@ final class TrickProgress {
     }
 }
 
-enum Status: String, Codable, CaseIterable {
+enum Status: String, Codable, CaseIterable, Comparable {
     case notLanded = "not Landed"
     case flagged = "Flagged"
     case landed = "Landed"
@@ -48,7 +48,17 @@ enum Status: String, Codable, CaseIterable {
             case .landed: return .notLanded
             }
         }
+    var sort0rder: Int {
+        switch self {
+        case .flagged: return 0
+        case .landed: return 1
+        case .notLanded: return 2
+        }
+    }
     
+    static func < (lhs: Status, rhs:Status) -> Bool {
+        lhs.sort0rder < rhs.sort0rder
+    }
     
 }
 
