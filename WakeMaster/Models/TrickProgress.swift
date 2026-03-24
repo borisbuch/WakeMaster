@@ -15,7 +15,7 @@ final class TrickProgress {
     
     init(
         trickID: Int,
-        status: Status = .flagged
+        status: Status = .notLanded
     ) {
         self.trickID = trickID
         self.status = status

@@ -22,18 +22,21 @@ struct TrickItemButton: View {
     }
     var body: some View {
         Button {
-            let generator = UIImpactFeedbackGenerator(style: .heavy)
-                        generator.impactOccurred()
-            
-                    if let progress = currentProgress {
-                        progress.status = progress.status.next
-                    } else {
-                        let newEntry = TrickProgress(trickID: trick.id)
-                        modelContext.insert(newEntry)
-                    }
+            withAnimation{
+                let generator = UIImpactFeedbackGenerator(style: .heavy)
+                            generator.impactOccurred()
+                
+                        if let progress = currentProgress {
+                            progress.status = progress.status.next
+                        } else {
+                            let newEntry = TrickProgress(trickID: trick.id, status: .flagged)
+                            modelContext.insert(newEntry)
+                        }
+            }
                 print(trickProgress)
                 } label: {
                     Image(systemName: currentStatus.symbol)
+                        .contentTransition(.symbolEffect)
                         .frame(width: 29, height: 29)
                         .clipShape(Circle())
                         .foregroundStyle(.black)
