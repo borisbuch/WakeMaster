@@ -22,10 +22,10 @@ final class TrickProgress {
     }
 }
 
-enum Status: String, Codable, CaseIterable, Comparable {
-    case notLanded = "not Landed"
+enum Status: String, Codable, CaseIterable, Comparable, Hashable{
     case flagged = "Flagged"
     case landed = "Landed"
+    case notLanded = "Not Landed"
      
     var color: Color {
         switch self {

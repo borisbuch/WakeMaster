@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TrickItem: View {
     var trick: Trick
     var service: TrickService
+    
+    @Query private var trickProgress: [TrickProgress]
+    
     var body: some View {
         ZStack{
         RoundedRectangle(cornerRadius: 25)
@@ -31,6 +35,18 @@ struct TrickItem: View {
 
             
         }
+        .contextMenu{
+                if let progress = trickProgress.first(where: { $0.trickID == trick.id }) {
+                    Picker("Sort", selection: Binding(
+                        get: { progress.status },
+                        set: { progress.status = $0 }
+                    )) {
+                        ForEach(Status.allCases, id: \.self) { status in
+                            Label(status.rawValue, systemImage: status.symbol).tag(status)
+                        }
+                    }
+                }
+            }        
 
     }
 }

@@ -12,6 +12,7 @@ let tricks: [Trick] = loadTricksFromCSV()
 
 
 struct GridTrickView: View {
+//    @State private var filterDict: [Status:Binding<Bool>] = [.flagged : true,.landed: true, .notLanded: true]
     @State private var showLanded = true
     @State private var showFlagged = true
     @State private var showNotLanded = true
@@ -25,10 +26,11 @@ struct GridTrickView: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12, alignment: .top), count: 2), spacing: 12) {
+                    let filterList = [showNotLanded, showLanded, showFlagged]
                     switch service.groupType {
                     case .difficulty :
                         
-                        let dict = service.groupedFilteredByProgressionLevel(searchField)
+                        let dict = service.groupedFilteredByProgressionLevel(searchField, trickProgress: trickProgress, filterList: filterList)
                         
                         ForEach(dict.keys.sorted(), id: \.self) { category in
                             if let items = dict[category] {
@@ -52,7 +54,7 @@ struct GridTrickView: View {
                         }
                     case .category :
                         
-                        let dict = service.groupedFilteredByCategory(searchField)
+                        let dict = service.groupedFilteredByCategory(searchField, trickProgress: trickProgress, filterList: filterList)
                         
                         ForEach(dict.keys.sorted(), id: \.self) { category in
                             if let items = dict[category] {
@@ -76,7 +78,7 @@ struct GridTrickView: View {
                         }
                     case .status :
                         
-                        let dict = service.groupedFilteredByStatus(searchField, trickProgress: trickProgress)
+                        let dict = service.groupedFilteredByStatus(searchField, trickProgress: trickProgress, filterList: filterList)
                         
                         ForEach(dict.keys.sorted(), id: \.self) { category in
                             if let items = dict[category] {
@@ -157,8 +159,8 @@ struct GridTrickView: View {
                             
                         }
                         Menu("Filter", systemImage: "line.3.horizontal.decrease") {
-                            Toggle("Landed Tricks", isOn: $showLanded)
                             Toggle("Flagged Tricks", isOn: $showFlagged)
+                            Toggle("Landed Tricks", isOn: $showLanded)
                             Toggle("Not Landed Tricks", isOn: $showNotLanded)
                             
                         }
