@@ -10,6 +10,7 @@ import SwiftData
 import Playgrounds
 
 struct TrickItemButton: View {
+    
     @Environment(\.modelContext) private var modelContext
     @Query private var trickProgress: [TrickProgress]
     var trick: Trick

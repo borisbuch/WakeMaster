@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import Playgrounds
 
 // MARK: - Modell
 class Trick: Identifiable {
@@ -17,9 +18,11 @@ class Trick: Identifiable {
     let category: TrickCategory
     let edgeType: String
     let rotationDirection: String
+    let videoID: String
 
     init?(csvLine: String) {
-        let regex = try! NSRegularExpression(pattern: #"(?:^|,)(\"(?:[^\"]|\"\")*\"|[^,]*)"#)
+        let regex = try! NSRegularExpression(pattern: //#"(?:^|,)(\"(?:[^\"]|\"\")*\"|[^,]*)"#) // CSV mit , getrennt
+            #"(?:^|;)(\"(?:[^\"]|\"\")*\"|[^;]*)"#) //CSV mit ; getrennt
         let matches = regex.matches(in: csvLine, range: NSRange(csvLine.startIndex..., in: csvLine))
         let components = matches.map { match -> String in
             let range = Range(match.range(at: 1), in: csvLine)!
@@ -40,14 +43,16 @@ class Trick: Identifiable {
         self.category = tc
         self.edgeType = components[5]
         self.rotationDirection = components[6]
+        self.videoID = components[7]
     }
-    enum TrickCategory : String, CaseIterable, Comparable {
+    enum TrickCategory : String, CaseIterable, Comparable, MyEnumProtocol{
         case basics = "Basics"
         case air = "Air"
         case grabs = "Grabs"
         case spins = "Spins"
         case raley = "Raley"
         case backRoll = "Back Roll"
+        case frontFlip = "Front Flip"
         case frontRoll = "Front Roll"
         case tantrum = "Tantrum"
         case whip = "Whip"
@@ -55,7 +60,7 @@ class Trick: Identifiable {
         
         var color: Color {
             switch self {
-            default: return .primary
+            default: return .secondary
             }
         }
         var sortOrder: Int {
@@ -67,9 +72,10 @@ class Trick: Identifiable {
             case .spins: return 4
             case .raley: return 5
             case .backRoll: return 6
-            case .frontRoll: return 7
-            case .tantrum: return 8
-            case .whip: return 9
+            case .frontFlip: return 7
+            case .frontRoll: return 8
+            case .tantrum: return 9
+            case .whip: return 10
             }
         }
         var symbol: String {
@@ -82,7 +88,7 @@ class Trick: Identifiable {
         }
     }
     
-    enum ProgressionLevel : String, CaseIterable, Comparable {
+    enum ProgressionLevel : String, CaseIterable, Comparable, MyEnumProtocol{
         case beginner = "Beginner"
         case advanced = "Advanced"
         case pro = "Pro"
@@ -100,8 +106,8 @@ class Trick: Identifiable {
             switch self {
             case .beginner: return .mint
             case .advanced: return .cyan
-            case .pro: return .indigo
-            case  .expert: return .purple
+            case .pro: return .purple
+            case  .expert: return .pink
             }
         }
         var symbol: String {
@@ -122,7 +128,7 @@ class Trick: Identifiable {
 
 // MARK: - CSV Loader
 func loadTricksFromCSV() -> [Trick] {
-    guard let path = Bundle.main.path(forResource: "tricks", ofType: "csv") else {
+    guard let path = Bundle.main.path(forResource: "tricks 2", ofType: "csv") else {
         print("CSV file not found")
         return []
     }
@@ -132,6 +138,7 @@ func loadTricksFromCSV() -> [Trick] {
         let lines = data.components(separatedBy: "\n")
         var tricks: [Trick] = []
         for line in lines.dropFirst() {
+            
             if let trick = Trick(csvLine: line) {
                 tricks.append(trick)
             }
@@ -143,6 +150,9 @@ func loadTricksFromCSV() -> [Trick] {
     }
 }
 
+#Playground {
+    loadTricksFromCSV()[92]
+}
 // MARK: - TricksView
 struct TricksView: View {
     let tricks: [Trick] = loadTricksFromCSV()
@@ -212,53 +222,6 @@ struct TricksView: View {
         }
     }
 }
-
-// MARK: - DetailView
-struct TrickDetailView: View {
-    let trick: Trick
-    
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 15) {
-                Text("Category: \(trick.category.rawValue)")
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                Text("Edge Type: \(trick.edgeType)")
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                Text("Rotation Direction: \(trick.rotationDirection)")
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                
-                Divider()
-                
-                Text(trick.description)
-                    .font(.body)
-                    .foregroundColor(.primary)
-                    .padding(.bottom, 20)
-
-                // 🔹 "Learn Trick"" Button
-                Button(action: {
-                    // Action folgt später
-                }) {
-                    Text("Learn Trick")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(15)
-                        .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 3)
-                }
-            }
-            .padding()
-        }
-        .background(Color(.systemBlue).opacity(0.2))
-        .navigationTitle(trick.name)
-    }
-}
-
 // MARK: - Icon + Farbe pro Level
 func iconName(for level: Trick.ProgressionLevel) -> String {
     switch level {

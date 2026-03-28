@@ -22,7 +22,7 @@ final class TrickProgress {
     }
 }
 
-enum Status: String, Codable, CaseIterable, Comparable, Hashable{
+enum Status: String, Codable, CaseIterable, Comparable, Hashable, MyEnumProtocol{
     case flagged = "Flagged"
     case landed = "Landed"
     case notLanded = "Not Landed"

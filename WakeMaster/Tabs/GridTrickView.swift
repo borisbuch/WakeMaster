@@ -34,21 +34,13 @@ struct GridTrickView: View {
                         
                         ForEach(dict.keys.sorted(), id: \.self) { category in
                             if let items = dict[category] {
-                                Section {
+                                Section(header: SectionHeaderView(category: category)) {
                                     ForEach(items) { trick in
                                         NavigationLink(destination: TrickDetailView(trick: trick))
                                         {
-                                            TrickItem(trick: trick, service: service)
+                                            TrickItem(trick: trick)
                                         }
                                     }
-                                } header: {
-                                    Label{
-                                        Text(category.rawValue)
-                                    } icon: {
-                                        Image(systemName: category.symbol)
-                                            .foregroundStyle(category.color)
-                                    }
-                                    .font(.title2)
                                 }
                             }
                         }
@@ -58,21 +50,13 @@ struct GridTrickView: View {
                         
                         ForEach(dict.keys.sorted(), id: \.self) { category in
                             if let items = dict[category] {
-                                Section {
+                                Section (header: SectionHeaderView(category: category)){
                                     ForEach(items) { trick in
                                         NavigationLink(destination: TrickDetailView(trick: trick))
                                         {
-                                            TrickItem(trick: trick,service: service)
+                                            TrickItem(trick: trick)
                                         }
                                     }
-                                } header: {
-                                    Label{
-                                        Text(category.rawValue)
-                                    } icon: {
-                                        Image(systemName: category.symbol)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    .font(.title2)
                                 }
                             }
                         }
@@ -82,21 +66,13 @@ struct GridTrickView: View {
                         
                         ForEach(dict.keys.sorted(), id: \.self) { category in
                             if let items = dict[category] {
-                                Section {
+                                Section (header: SectionHeaderView(category: category)) {
                                     ForEach(items) { trick in
                                         NavigationLink(destination: TrickDetailView(trick: trick))
                                         {
-                                            TrickItem(trick: trick,service: service)
+                                            TrickItem(trick: trick)
                                         }
                                     }
-                                } header: {
-                                    Label{
-                                        Text(category.rawValue)
-                                    } icon: {
-                                        Image(systemName: category.symbol)
-                                            .foregroundStyle(category.color)
-                                    }
-                                    .font(.title2)
                                 }
                             }
                         }
@@ -127,6 +103,7 @@ struct GridTrickView: View {
                     }
                 }
                 .padding(15)
+
             }
             .navigationTitle("Tricks")
             .toolbarTitleDisplayMode(.inlineLarge)
