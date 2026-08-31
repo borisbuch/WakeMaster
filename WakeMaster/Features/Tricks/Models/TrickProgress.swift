@@ -12,13 +12,16 @@ import SwiftUI
 final class TrickProgress {
     var trickID: Int
     var status: Status
+    var notes: String
     
     init(
         trickID: Int,
-        status: Status = .notLanded
+        status: Status = .notLanded,
+        notes: String = ""
     ) {
         self.trickID = trickID
         self.status = status
+        self.notes = notes
     }
 }
 

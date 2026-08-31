@@ -7,7 +7,7 @@
 
 
 import SwiftUI
-
+import SwiftData
 
 /// Shows the a detailed view of the passed trick and shows the suiting video on top
 struct TrickDetailView: View {
@@ -16,6 +16,17 @@ struct TrickDetailView: View {
     /// dismiss is used to get Back to the previous page
     @Environment(\.dismiss) private var dismiss
     
+    @Query private var trickProgress: [TrickProgress]
+    
+    
+    init(trick: Trick) {
+        self.trick = trick
+        // Configure the SwiftData query with a predicate that compares TrickProgress.trickID to this trick's id
+        let id = trick.id
+        self._trickProgress = Query(filter: #Predicate<TrickProgress> { progress in
+            progress.trickID == id
+        })
+    }
     
     var body: some View {
         VStack {
@@ -70,6 +81,8 @@ struct TrickDetailView: View {
                             .font(.body)
                             .foregroundColor(.primary)
                             .padding(.bottom, 20)
+                        
+                        Divider()
                         
                     }
                     .padding()

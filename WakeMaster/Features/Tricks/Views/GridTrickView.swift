@@ -83,19 +83,7 @@ struct GridTrickView: View {
                         
                                     ForEach(list) { trick in
                                         NavigationLink(destination: TrickDetailView(trick: trick)) {
-                                            RoundedRectangle(cornerRadius: 25)
-                                                .fill(trick.progressionLevel.color)
-                                                .frame(height: 116)
-                                                .overlay(alignment: .topLeading) {
-                                                    VStack(alignment: .leading, spacing: 6) {
-                                                        Text(trick.name)
-                                                            .foregroundColor(.white)
-                                                            .shadow(color: .black.opacity(0.5), radius: 4, x: 0, y: 2)
-                                                        Text(trick.category.rawValue)
-                                                            .foregroundStyle(.gray)
-                                                    }
-                                                    .padding(15)
-                                                }
+                                            TrickItem(trick: trick)
                                         }
                                     }
                              
