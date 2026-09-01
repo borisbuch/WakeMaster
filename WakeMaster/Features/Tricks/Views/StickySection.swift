@@ -14,6 +14,8 @@ struct StickySection<Content: View, Header: View, MinimisedHeader: View>:
     @ViewBuilder var content: Content
     @ViewBuilder var header: Header
     @ViewBuilder var minimisedHeader: MinimisedHeader
+    //View Properties
+    @State private var headerSize: CGSize = .zero
     var body: some View {
         VStack(alignment: .leading, spacing: spacing) {
             header
@@ -27,6 +29,7 @@ struct StickySection<Content: View, Header: View, MinimisedHeader: View>:
                 .background{
                     minimisedHeader
                         .frame(maxHeight: .infinity)
+                        .offset(y: config.minimisedHeaderOffset / 2)
                         .visualEffect { content, proxy in
                             let rect = proxy.frame(in: .named("SECTION"))
                             let minY = max(rect.minY - config.sectionPadding - config.headerFadeDistance, 0)
@@ -36,6 +39,12 @@ struct StickySection<Content: View, Header: View, MinimisedHeader: View>:
                         }
                 }
                 .padding([.horizontal, .top], config.sectionPadding)
+                .onGeometryChange(for: CGSize.self) {
+                    $0.size
+                } action: { newValue in
+                    headerSize = newValue
+                }
+
             content
                 .padding([.horizontal, .top], config.sectionPadding)
                 .visualEffect { content, proxy in
@@ -49,6 +58,10 @@ struct StickySection<Content: View, Header: View, MinimisedHeader: View>:
         }
         .background{
             GeometryReader { proxy in
+                let rect = proxy.frame(in: .named("SECTION"))
+                let viewHeight = proxy.size.height
+                let headerHeight = headerSize.height + config.sectionPadding + config.minimisedHeaderOffset
+                let bottomPadding = min(max(rect.minY, 0), viewHeight - headerHeight )
                 Group {
                     if config.isGlassBackground {
                         Rectangle()
@@ -59,18 +72,35 @@ struct StickySection<Content: View, Header: View, MinimisedHeader: View>:
                             .fill(config.background)
                     }
                 }
+                .padding(.bottom, bottomPadding)
             }
             
         }
         .mask{
-            RoundedRectangle(cornerRadius: config.cornerRadius)
+            GeometryReader { proxy in
+                let rect = proxy.frame(in: .named("SECTION"))
+                let viewHeight = proxy.size.height
+                let headerHeight = headerSize.height + config.sectionPadding + config.minimisedHeaderOffset
+                let bottomPadding = min(max(rect.minY, 0), viewHeight - headerHeight )
+                
+                RoundedRectangle(cornerRadius: config.cornerRadius)
+                    .padding(.bottom, bottomPadding)
+            }
         }
         .compositingGroup()
-        .visualEffect{content, proxy in
+        .visualEffect{[headerSize] content, proxy in
             let rect = proxy.frame(in: .scrollView(axis: .vertical))
             let minY = rect.minY
+            let headerHeight = headerSize.height + config.sectionPadding + config.minimisedHeaderOffset
+            let cutoffHeight = proxy.size.height - headerHeight
+            let distance = abs(min(cutoffHeight + minY, 0))
+            let progress = max(min(distance / config.fadeDistance, 1), 0)
+            let scale = 1 - (progress * config.fadeScale)
+            let opacity = 1 - progress
             
             return content
+                .scaleEffect(scale, anchor: .top)
+                .opacity(opacity)
                 .offset(y: minY < 0 ? -minY : 0)
         }
         .coordinateSpace(.named("SECTION"))
@@ -79,10 +109,12 @@ struct StickySection<Content: View, Header: View, MinimisedHeader: View>:
         var sectionPadding: CGFloat = 16
         var cornerRadius: CGFloat = 20
         var background: AnyShapeStyle = .init(.fill.tertiary)
-        var isGlassBackground: Bool = true
+        var isGlassBackground: Bool = false
         
+        var minimisedHeaderOffset: CGFloat = -10
         var headerFadeDistance: CGFloat = 15
         var fadeDistance: CGFloat = 45
+        var fadeScale: CGFloat = 0.5
     }
 }
 

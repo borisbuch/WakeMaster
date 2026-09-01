@@ -23,13 +23,13 @@ struct RingView: View {
                 let percent = (valueDict[level] ?? 0) / 100
                 ZStack {
                     Circle()
-                        .stroke(.gray.opacity(0.3), lineWidth: 20)
+                        .stroke(.gray.opacity(0.3), lineWidth: 11)
                     Circle()
                         .trim(from: 0, to: percent)
-                        .stroke(level.color, style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round))
+                        .stroke(level.color, style: StrokeStyle(lineWidth: 11, lineCap: .round, lineJoin: .round))
                         .rotationEffect(.degrees(-90))
                 }
-                .padding(CGFloat(index) * 32)
+                .padding(CGFloat(index) * 21)
             }
         }
     }
